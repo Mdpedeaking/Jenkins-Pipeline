@@ -36,6 +36,10 @@ pipeline {
                 //always{
                     //junit '**/build/test-results/test/*.xml' -> Publish JUnit test results
                     //junit '**/build/test-results/integrationTest/*.xml' -> Publish JUnit integration test results}
+                always{
+                    emailext attachLog: true, 
+                     to: 'nethmini2020.p@gmail.com'
+                }
                 success {
                     mail to: "nethmini2020.p@gmail.com",
                     subject: "Test Status Email",
