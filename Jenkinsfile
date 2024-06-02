@@ -105,18 +105,18 @@ pipeline {
                        // ssh -o StrictHostKeyChecking=no user@${env.STAGING_SERVER} 'bash -s' < deploy_script.sh
                        // """
                     }
-                }
-            }
-            post {    
-                success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Deployment Status",
-                    body: "Deployment to staging was successful."
-                }
-                failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Deployment Status",
-                    body: "Deployment to staging failed. Check the Jenkins logs for more details."
+                
+                post {    
+                    success {
+                        mail to: "nethmini2020.p@gmail.com",
+                        subject: "Deployment Status",
+                        body: "Deployment to staging was successful."
+                    }
+                    failure {
+                        mail to: "nethmini2020.p@gmail.com",
+                        subject: "Deployment Status",
+                        body: "Deployment to staging failed. Check the Jenkins logs for more details."
+                    }
                 }
             }
         }
@@ -154,18 +154,20 @@ pipeline {
                         //"""
                     }
                 }
-            }
-            post {
-                success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Deployment Status Email",
-                    body: "Deployment to production was successful"
-                }
-                failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Deployment Status Email",
-                    body: "Deployment to production failed. Check the Jenkins logs for more details."
+            
+                post {
+                    success {
+                        mail to: "nethmini2020.p@gmail.com",
+                        subject: "Deployment Status Email",
+                        body: "Deployment to production was successful"
+                    }
+                    failure {
+                        mail to: "nethmini2020.p@gmail.com",
+                        subject: "Deployment Status Email",
+                        body: "Deployment to production failed. Check the Jenkins logs for more details."
+                    }
                 }
             }
         }
-
+    }
+}
