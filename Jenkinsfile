@@ -98,27 +98,26 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 script {
-                    echo "Deploy to Staging: Deploy the application to a staging server "
+                    echo "Deploy to Staging: Deploy the application to a staging server"
                    // sshagent(credentials: [env.SSH_CREDENTIALS_ID]) {
                         //sh """
                         //scp -o StrictHostKeyChecking=no build/libs/your-app.jar user@${env.STAGING_SERVER}:/path/to/deploy/
                        // ssh -o StrictHostKeyChecking=no user@${env.STAGING_SERVER} 'bash -s' < deploy_script.sh
                        // """
                     }
-                
-                post {    
-                    success {
-                        mail to: "nethmini2020.p@gmail.com",
-                        subject: "Deployment Status",
-                        body: "Deployment to staging was successful."
-                    }
-                    failure {
-                        mail to: "nethmini2020.p@gmail.com",
-                        subject: "Deployment Status",
-                        body: "Deployment to staging failed. Check the Jenkins logs for more details."
+            }
+            post {    
+                success {
+                mail to: "nethmini2020.p@gmail.com",
+                subject: "Deployment Status",
+                body: "Deployment to staging was successful."
+                 }
+                failure {
+                mail to: "nethmini2020.p@gmail.com",
+                subject: "Deployment Status",
+                body: "Deployment to staging failed. Check the Jenkins logs for more details."
                     }
                 }
-            }
         }
         
         stage('Integration Tests on Staging') {
@@ -170,4 +169,5 @@ pipeline {
             }
         }
     }
+
 
