@@ -7,19 +7,21 @@ pipeline {
                 script {
                     echo "Build: Fetch the source code from the directory path specified by the environment variable"
                     echo "Build: Compile and package the code using Gradle"
-                   // sh 'gradle clean build' ->command to compile and package the code using gradle
+                    // sh 'gradle clean build' -> command to compile and package the code using gradle
                 }
             }
             post {
                 success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Build Status Email",
-                    body: "Gradle build was successful"
+                    emailext attachLog: true, 
+                             subject: "Build Status - SUCCESS", 
+                             body: "Gradle build was successful", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
                 failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Build Status Email",
-                    body: "Gradle build has failed"
+                    emailext attachLog: true, 
+                             subject: "Build Status - FAILURE", 
+                             body: "Gradle build has failed", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
             }
         }
@@ -28,27 +30,28 @@ pipeline {
             steps {
                 script {
                     echo "Unit and Integration Tests: Run unit tests and integration tests using JUnit gradle tests and integration test"
-                    //sh 'gradle test'
-                    //sh "gradle integrationTest"
+                    // sh 'gradle test'
+                    // sh "gradle integrationTest"
                 }
             }
             post {
-                //always{
-                    //junit '**/build/test-results/test/*.xml' -> Publish JUnit test results
-                    //junit '**/build/test-results/integrationTest/*.xml' -> Publish JUnit integration test results}
-                always{
+                always {
                     emailext attachLog: true, 
-                     to: 'nethmini2020.p@gmail.com'
+                             subject: "Unit and Integration Test Logs", 
+                             body: "Attached are the logs for unit and integration tests.", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
                 success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Test Status Email",
-                    body: "Unit and Integration tests were successful"
+                    emailext attachLog: true, 
+                             subject: "Test Status - SUCCESS", 
+                             body: "Unit and Integration tests were successful", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
                 failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Test Status Email",
-                    body: "Unit and Integration tests have failed"
+                    emailext attachLog: true, 
+                             subject: "Test Status - FAILURE", 
+                             body: "Unit and Integration tests have failed", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
             }
         }
@@ -57,21 +60,27 @@ pipeline {
             steps {
                 script {
                     echo "Code Analysis: Analyse the code using PMD to ensure it meets industry standards"
-                    //sh 'gradle pmdMain'
+                    // sh 'gradle pmdMain'
                 }
             }
             post {
-                //always{
-                   // pmd pattern: '**build/reports/pmd/*.xml' }
+                always {
+                    emailext attachLog: true, 
+                             subject: "Code Analysis Logs", 
+                             body: "Attached are the logs for code analysis.", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
                 success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Code Analysis Status Email",
-                    body: "Code analysis was successful"
+                    emailext attachLog: true, 
+                             subject: "Code Analysis Status - SUCCESS", 
+                             body: "Code analysis was successful", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
                 failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Code Analysis Status Email",
-                    body: "Code analysis has failed"
+                    emailext attachLog: true, 
+                             subject: "Code Analysis Status - FAILURE", 
+                             body: "Code analysis has failed", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
             }
         }
@@ -80,21 +89,27 @@ pipeline {
             steps {
                 script {
                     echo "Security Scan: Perform a security scan using OWASP Dependency-Check to identify vulnerabilities"
-                    //dependencyCheck additionalArguments: '--project "your-project" --scan .', odcInstallation: 'Dependency-Check'
+                    // dependencyCheck additionalArguments: '--project "your-project" --scan .', odcInstallation: 'Dependency-Check'
                 }
             }
             post {
-                //always{
-                    //dependencyCheckPublisher pattern: '**/dependency-check-report.xml'}
+                always {
+                    emailext attachLog: true, 
+                             subject: "Security Scan Logs", 
+                             body: "Attached are the logs for the security scan.", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
                 success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Security Scan Status Email",
-                    body: "Security scan was successful"
+                    emailext attachLog: true, 
+                             subject: "Security Scan Status - SUCCESS", 
+                             body: "Security scan was successful", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
                 failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Security Scan Status Email",
-                    body: "Security scan has found vulnerabilities!!"
+                    emailext attachLog: true, 
+                             subject: "Security Scan Status - FAILURE", 
+                             body: "Security scan has found vulnerabilities!!", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
             }
         }
@@ -103,44 +118,61 @@ pipeline {
             steps {
                 script {
                     echo "Deploy to Staging: Deploy the application to a staging server"
-                   // sshagent(credentials: [env.SSH_CREDENTIALS_ID]) {
-                        //sh """
-                        //scp -o StrictHostKeyChecking=no build/libs/your-app.jar user@${env.STAGING_SERVER}:/path/to/deploy/
-                       // ssh -o StrictHostKeyChecking=no user@${env.STAGING_SERVER} 'bash -s' < deploy_script.sh
-                       // """
-                    }
-            }
-            post {    
-                success {
-                mail to: "nethmini2020.p@gmail.com",
-                subject: "Deployment Status",
-                body: "Deployment to staging was successful."
-                 }
-                failure {
-                mail to: "nethmini2020.p@gmail.com",
-                subject: "Deployment Status",
-                body: "Deployment to staging failed. Check the Jenkins logs for more details."
-                    }
+                    // sshagent(credentials: [env.SSH_CREDENTIALS_ID]) {
+                    //     sh """
+                    //     scp -o StrictHostKeyChecking=no build/libs/your-app.jar user@${env.STAGING_SERVER}:/path/to/deploy/
+                    //     ssh -o StrictHostKeyChecking=no user@${env.STAGING_SERVER} 'bash -s' < deploy_script.sh
+                    //     """
+                    // }
                 }
+            }
+            post {
+                always {
+                    emailext attachLog: true, 
+                             subject: "Deployment to Staging Logs", 
+                             body: "Attached are the logs for deployment to staging.", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
+                success {
+                    emailext attachLog: true, 
+                             subject: "Deployment Status - SUCCESS", 
+                             body: "Deployment to staging was successful", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
+                failure {
+                    emailext attachLog: true, 
+                             subject: "Deployment Status - FAILURE", 
+                             body: "Deployment to staging failed. Check the Jenkins logs for more details.", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
+            }
         }
         
         stage('Integration Tests on Staging') {
             steps {
                 script {
                     echo "Integration Tests on Staging: Run integration tests in the staging environment"
-                    //sh 'gradle integrationTest'
+                    // sh 'gradle integrationTest'
                 }
             }
             post {
+                always {
+                    emailext attachLog: true, 
+                             subject: "Staging Integration Test Logs", 
+                             body: "Attached are the logs for integration tests on staging.", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
                 success {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Staging Test Status Email",
-                    body: "Integration tests on staging were successful"
+                    emailext attachLog: true, 
+                             subject: "Staging Test Status - SUCCESS", 
+                             body: "Integration tests on staging were successful", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
                 failure {
-                    mail to: "nethmini2020.p@gmail.com",
-                    subject: "Staging Test Status Email",
-                    body: "Integration tests on staging have failed"
+                    emailext attachLog: true, 
+                             subject: "Staging Test Status - FAILURE", 
+                             body: "Integration tests on staging have failed", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
             }
         }
@@ -148,30 +180,36 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 script {
-                    echo "Deploy to Production: Deploy the application to a production server "
-                    // Use SSH to copy the artifacts to the production server
-                   // sshagent(credentials: [env.SSH_CREDENTIALS_ID]) {
-                       // sh """
-                       // scp -o StrictHostKeyChecking=no build/libs/your-app.jar user@${env.PRODUCTION_SERVER}:/path/to/deploy/
-                        //sh -o StrictHostKeyChecking=no user@${env.PRODUCTION_SERVER} 'bash -s' < deploy_script.sh
-                        //"""
-                    }
+                    echo "Deploy to Production: Deploy the application to a production server"
+                    // sshagent(credentials: [env.SSH_CREDENTIALS_ID]) {
+                    //     sh """
+                    //     scp -o StrictHostKeyChecking=no build/libs/your-app.jar user@${env.PRODUCTION_SERVER}:/path/to/deploy/
+                    //     ssh -o StrictHostKeyChecking=no user@${env.PRODUCTION_SERVER} 'bash -s' < deploy_script.sh
+                    //     """
+                    // }
                 }
-            
-                post {
-                    success {
-                        mail to: "nethmini2020.p@gmail.com",
-                        subject: "Deployment Status Email",
-                        body: "Deployment to production was successful"
-                    }
-                    failure {
-                        mail to: "nethmini2020.p@gmail.com",
-                        subject: "Deployment Status Email",
-                        body: "Deployment to production failed. Check the Jenkins logs for more details."
-                    }
+            }
+            post {
+                always {
+                    emailext attachLog: true, 
+                             subject: "Deployment to Production Logs", 
+                             body: "Attached are the logs for deployment to production.", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
+                success {
+                    emailext attachLog: true, 
+                             subject: "Deployment Status - SUCCESS", 
+                             body: "Deployment to production was successful", 
+                             to: 'nethmini2020.p@gmail.com'
+                }
+                failure {
+                    emailext attachLog: true, 
+                             subject: "Deployment Status - FAILURE", 
+                             body: "Deployment to production failed. Check the Jenkins logs for more details.", 
+                             to: 'nethmini2020.p@gmail.com'
                 }
             }
         }
     }
-
+}
 
